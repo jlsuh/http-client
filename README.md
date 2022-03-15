@@ -1,6 +1,6 @@
 # http-client
 ```bash
-$ make start ARGS="httpbin.org 80 /anything"
+$ make start ARGS="httpbin.org 80 GET /anything"
 {
   "args": {},
   "data": "",
@@ -16,7 +16,7 @@ $ make start ARGS="httpbin.org 80 /anything"
 }
 ```
 ```bash
-$ make start ARGS="www.google.com 80 /"
+$ make start ARGS="www.google.com 80 GET /"
 HTTP/1.0 200 OK
 Date: ...
 Expires: -1
