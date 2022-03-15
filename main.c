@@ -49,13 +49,13 @@ void get_res(int fromSocket) {
     printf("\n");
 }
 
-void send_req(int fromSocket, char const* pathToResource) {
+void send_req(int toSocket, char const* pathToResource) {
     size_t curr = 0;
     char const* verb = "GET";
     char const* suffEscSeq = "\r\n";
     char* req = calloc(strlen(verb) + 1 + strlen(pathToResource) + strlen(suffEscSeq) + 1, sizeof(*req));
     sprintf(req, "%s %s%s", verb, pathToResource, suffEscSeq);
-    write(fromSocket, req, strlen(req) + 1);
+    write(toSocket, req, strlen(req) + 1);
     free(req);
 }
 
