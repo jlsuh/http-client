@@ -5,7 +5,7 @@ all: clean
 	@gcc main.c -o $(EXECUTABLE)
 
 start: all
-	@valgrind --leak-check=full ./http $(ARGS)
+	@valgrind --tool=none ./$(EXECUTABLE) $(ARGS)
 
 clean:
 	@rm -f ./$(EXECUTABLE)

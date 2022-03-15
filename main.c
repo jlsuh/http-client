@@ -1,10 +1,11 @@
 #include <netdb.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 
 #define BUFFER_SIZE 1024
-#define MIN_ARGS_SIZE 3
+#define MIN_ARGS_SIZE 4
 
 int connect_to_host(char* host, char* port) {
     int conn;
@@ -48,23 +49,30 @@ void get_res(int fromSocket) {
     printf("\n");
 }
 
-void send_req(int fromSocket) {
-    write(fromSocket, "GET /\r\n", strlen("GET /\r\n"));
+void send_req(int fromSocket, char const* pathToResource) {
+    size_t curr = 0;
+    char const* verb = "GET";
+    char const* suffEscSeq = "\r\n";
+    char* req = calloc(strlen(verb) + 1 + strlen(pathToResource) + strlen(suffEscSeq) + 1, sizeof(*req));
+    sprintf(req, "%s %s%s", verb, pathToResource, suffEscSeq);
+    write(fromSocket, req, strlen(req) + 1);
+    free(req);
 }
 
 int main(int argc, char* argv[]) {
     if (argc < MIN_ARGS_SIZE) {
-        puts("Format: make start <hostname> <port>");
+        puts("Format: make start ARGS=\"<hostname> <port> </path/to/resource>\"");
         return -1;
     }
     int hostSock = connect_to_host(argv[1], argv[2]);
-    if (hostSock == -1) {
+    if (-1 == hostSock) {
         return -1;
     }
 
-    send_req(hostSock);
+    send_req(hostSock, argv[3]);
     get_res(hostSock);
 
+    shutdown(hostSock, 2);
     close(hostSock);
 
     return 0;
