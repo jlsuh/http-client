@@ -6,6 +6,7 @@
 
 #define BUFFER_SIZE 1024
 #define MIN_ARGS_SIZE 5
+#define SUFFIX_ESC_SEQS "\r\n"
 
 int connect_to_host(char* host, char* port) {
     int conn;
@@ -50,9 +51,8 @@ void get_res(int fromSocket) {
 }
 
 void send_req(int toSocket, char const* verb, char const* pathToResource) {
-    char const* suffixEscSeq = "\r\n";
-    char* req = calloc(strlen(verb) + 1 + strlen(pathToResource) + strlen(suffixEscSeq) + 1, sizeof(*req));
-    sprintf(req, "%s %s%s", verb, pathToResource, suffixEscSeq);
+    char* req = calloc(strlen(verb) + 1 + strlen(pathToResource) + strlen(SUFFIX_ESC_SEQS) + 1, sizeof(*req));
+    sprintf(req, "%s %s%s", verb, pathToResource, SUFFIX_ESC_SEQS);
     write(toSocket, req, strlen(req) + 1);
     free(req);
 }
