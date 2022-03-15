@@ -1,5 +1,5 @@
 # http-client
-```json
+```bash
 $ make start ARGS="httpbin.org 80 /anything"
 {
   "args": {},
@@ -15,7 +15,7 @@ $ make start ARGS="httpbin.org 80 /anything"
   "url": ...
 }
 ```
-```json
+```bash
 $ make start ARGS="www.google.com 80 /"
 HTTP/1.0 200 OK
 Date: ...
