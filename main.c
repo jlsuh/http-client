@@ -5,7 +5,7 @@
 #include <unistd.h>
 
 #define BUFFER_SIZE 1024
-#define MIN_ARGS_SIZE 4
+#define MIN_ARGS_SIZE 5
 
 int connect_to_host(char* host, char* port) {
     int conn;
@@ -49,19 +49,17 @@ void get_res(int fromSocket) {
     printf("\n");
 }
 
-void send_req(int toSocket, char const* pathToResource) {
-    size_t curr = 0;
-    char const* verb = "GET";
-    char const* suffEscSeq = "\r\n";
-    char* req = calloc(strlen(verb) + 1 + strlen(pathToResource) + strlen(suffEscSeq) + 1, sizeof(*req));
-    sprintf(req, "%s %s%s", verb, pathToResource, suffEscSeq);
+void send_req(int toSocket, char const* verb, char const* pathToResource) {
+    char const* suffixEscSeq = "\r\n";
+    char* req = calloc(strlen(verb) + 1 + strlen(pathToResource) + strlen(suffixEscSeq) + 1, sizeof(*req));
+    sprintf(req, "%s %s%s", verb, pathToResource, suffixEscSeq);
     write(toSocket, req, strlen(req) + 1);
     free(req);
 }
 
 int main(int argc, char* argv[]) {
     if (argc < MIN_ARGS_SIZE) {
-        puts("Format: make start ARGS=\"<hostname> <port> </path/to/resource>\"");
+        puts("Format: make start ARGS=\"<hostname> <port> <verb> </path/to/resource>\"");
         return -1;
     }
     int hostSock = connect_to_host(argv[1], argv[2]);
@@ -69,11 +67,9 @@ int main(int argc, char* argv[]) {
         return -1;
     }
 
-    send_req(hostSock, argv[3]);
+    send_req(hostSock, argv[3], argv[4]);
     get_res(hostSock);
 
-    shutdown(hostSock, 2);
     close(hostSock);
-
     return 0;
 }
